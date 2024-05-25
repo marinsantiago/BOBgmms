@@ -1,0 +1,16 @@
+Package: BOBgmms
+Type: Package
+Title: Bayesian Optimized Bootstrap with Applications in Gaussian
+        Mixture Models
+Version: 1.0
+Date: 2024-03-14
+Author: Santiago Marin [aut, cre]
+Maintainer: Santiago Marin <santiago.marinardila@anu.edu.au>
+Description: Sample from the joint posterior distribution of Gaussian Mixture Models using Bayesian Optimized Bootstrap.
+URL: https://arxiv.org/abs/2311.03644
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.11), MASS, parallel, FKSUM, reticulate, lhs,
+        LaplacesDemon, mvnfast, DiceKriging, DiceOptim, pbapply
+LinkingTo: Rcpp, RcppEigen
+NeedsCompilation: yes
+Packaged: 2024-05-25 07:04:38 UTC; santiago
