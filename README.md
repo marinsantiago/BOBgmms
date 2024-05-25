@@ -7,7 +7,7 @@
 <!-- badges: end -->
 
 
-This repository contains the R package `BOBgmms` (developer's version), which implements the [Bayesian Optimized Bootstrap](https://arxiv.org/abs/2311.03644) in Finite Mixtures of Gaussians (Marin, Loong and Westveld, 2024).
+This repository contains the R package `BOBgmms` (developer's version), which implements the [Bayesian Optimized Bootstrap](https://arxiv.org/abs/2311.03644) in Gaussian Mixture Models (Marin, Loong and Westveld, 2024).
 
 ## Installation
 
