@@ -1,9 +1,11 @@
 # BOBgmms: Bayesian Optimized Bootstrap in Gaussin Mixture Models
 
 <!-- badges: start -->
+
 ![R-CMD-check](https://github.com/marinsantiago/BOBgmms/workflows/R-CMD-check/badge.svg)
 </br>
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
 <!-- badges: end -->
 
 
