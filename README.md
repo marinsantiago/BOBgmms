@@ -38,7 +38,7 @@ Detailed guidelines for using the package functions are referred to their help p
 
 ## <a name="system"></a> System Requirements
 
-The parallelization is conducted via *forking* (rather than *sockets*), so it only works on POSIX systems (i.e., Mac, Linux, Unix, BSD), not on Windows. For further details, see [Package '`parallel`'](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf).
+The parallelization is conducted via *forking* (rather than *sockets*), so it only works on POSIX systems (i.e., macOS, Linux, Unix, BSD), not on Windows. For further details, see [Package '`parallel`'](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf).
 
 ## <a name="cite"></a> Citation
 
