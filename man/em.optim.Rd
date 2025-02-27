@@ -96,10 +96,10 @@ A list containing the EM solution for each mean vector, each
 }
 \description{
 This function maximizes the weighted log-posterior density associated with a 
-Gaussian Mixture Model via the EM algorithm, as in Marin et al. (2024).
+Gaussian Mixture Model via the EM algorithm, as in Marin et al. (2025+).
 }
 \references{
-S. Marin, B. Long,and A. H. Westveld (2024), BOB: Bayesian Optimized 
+S. Marin, B. Long,and A. H. Westveld (2025+), BOB: Bayesian Optimized 
 Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models. 
 \emph{arXiv}, {2311.03644}.
 }

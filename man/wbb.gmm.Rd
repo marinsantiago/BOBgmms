@@ -102,10 +102,6 @@ systems. One can verify the OS type by running the following R code:
 \code{.Platform$OS.type}.
 }
 \references{
-S. Marin, B. Long,and A. H. Westveld (2024), BOB: Bayesian Optimized 
-Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models. 
-\emph{arXiv}, {2311.03644}.
-
 M.A. Newton, N.G. Polson, and J. Xu (2021), Weighted Bayesian bootstrap for 
 scalable posterior distributions. \emph{Can J Statistics}, 49:421-437.
 }

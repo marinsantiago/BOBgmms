@@ -105,11 +105,11 @@ A list of size two. The first element is a matrix of size
   \eqn{K} columns are posterior draws from the probability parameters. The 
   second elements in the list is a vector containing the optimal 
   \eqn{\boldsymbol{x}^{*}} values used in the random weighting. 
-  See Marin et al. (2024+) for details.
+  See Marin et al. (2025+) for details.
 }
 \description{
 This function generates approximate posterior draws from Gaussian mixture
-models using the Bayesian Optimized Bootstrap (BOB, Marin et al. 2024+). The
+models using the Bayesian Optimized Bootstrap (BOB, Marin et al. 2025+). The
 function leverages parallel computing across multiple CPU cores with the 
 package \code{parallel}. Please be aware that the parallelization is 
 conducted via \emph{forking} rather than \emph{sockets}, so it only works on 
@@ -117,7 +117,7 @@ conducted via \emph{forking} rather than \emph{sockets}, so it only works on
 \code{.Platform$OS.type}.
 }
 \references{
-S. Marin, B. Long,and A. H. Westveld (2024), BOB: Bayesian Optimized 
+S. Marin, B. Long,and A. H. Westveld (2025+), BOB: Bayesian Optimized 
 Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models. 
 \emph{arXiv}, {2311.03644}.
 }
