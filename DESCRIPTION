@@ -1,0 +1,30 @@
+Package: BOBgmms
+Type: Package
+Title: Bayesian Optimized Bootstrap for Approximate Posterior Sampling
+        in Gaussian Mixture Models
+Version: 0.1.0
+Authors@R: c(
+    person(
+      given = "Santiago", family = "Marin", role = c("aut", "cre"), 
+      email = "santiago.marinardila@anu.edu.au", 
+      comment = c(ORCID = "0009-0006-0086-3721")
+    ))
+Description: 
+    Approximately sample from the posterior distribution of Gaussian mixture
+    models under conjugate priors with the Weighted Bayesian Bootstrap (Newton 
+    et al. 2020 <https://doi.org/10.1002/cjs.11570>) and the Bayesian Optimized 
+    Bootstrap (Marin et al. 2025+ <https://doi.org/10.48550/arXiv.2311.03644>). 
+License: GPL (>= 2)
+Language: en-US
+Imports: Rcpp (>= 1.0.11), stats, parallel, pbmcapply, utils, mvnfast,
+        FKSUM, lhs, pbapply, DiceKriging, DiceOptim
+LinkingTo: Rcpp, RcppEigen
+URL: https://github.com/marinsantiago/BOBgmms
+BugReports: https://github.com/marinsantiago/BOBgmms/issues
+Depends: R (>= 4.2.0)
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+NeedsCompilation: yes
+Packaged: 2025-02-27 00:58:12 UTC; santiago
+Author: Santiago Marin [aut, cre] (<https://orcid.org/0009-0006-0086-3721>)
+Maintainer: Santiago Marin <santiago.marinardila@anu.edu.au>
