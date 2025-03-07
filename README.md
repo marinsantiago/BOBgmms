@@ -67,4 +67,4 @@ If you use any part of this code in your work, please consider citing our paper:
 
 ## <a name="refs"></a> References
 
-Marin, S., Loong, B., and Westveld, A. H. (2025+), "BOB: Bayesian Optimized Bootstrap for Uncertainty Quantification in Gaussian Mixture Models."
+Marin, S., Loong, B., and Westveld, A. H. (2025+), "BOB: Bayesian Optimized Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models."
