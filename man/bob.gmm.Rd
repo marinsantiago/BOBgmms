@@ -2,7 +2,7 @@
 % Please edit documentation in R/bob.R
 \name{bob.gmm}
 \alias{bob.gmm}
-\title{Sample from the posterior distribution of a GMM via BOB}
+\title{Approximately sample from the posterior distribution of a GMM via BOB}
 \usage{
 bob.gmm(
   y,
@@ -77,16 +77,16 @@ the approximate posterior and the true Bayesian posterior. Default is 1000.}
 iterations in the Bayesian optimization procedure. Default is 100.}
 
 \item{a}{A scalar corresponding to the \eqn{a} hyper-parameter in the 
-tempering profile. Note that \eqn{a\in [0,1)}. Default is 0.}
+tempering profile. Constraint: \eqn{a\in [0,1)}. Default is 0.}
 
 \item{b}{A scalar corresponding to the \eqn{b} hyper-parameter in the 
-tempering profile. Note that \eqn{b\in \mathbb{R}}. Default is 0.}
+tempering profile. Constraint: \eqn{b\in \mathbb{R}}. Default is 0.}
 
 \item{c}{A scalar corresponding to the \eqn{c} hyper-parameter in the 
-tempering profile. Note that \eqn{c>0}. Default is 1.}
+tempering profile. Constraint: \eqn{c>0}. Default is 1.}
 
 \item{r}{A scalar corresponding to the \eqn{r} hyper-parameter in the 
-tempering profile. Note that \eqn{r>0}. Default is 1.}
+tempering profile. Constraint: \eqn{r>0}. Default is 1.}
 
 \item{cores}{The number of CPU cores to use during the sampling process.
 Default is \code{parallel::detectCores() - 1}.}
@@ -95,31 +95,39 @@ Default is \code{parallel::detectCores() - 1}.}
 \code{sample.int(.Machine$integer.max, 1)}}
 }
 \value{
-A list of size two. The first element is a matrix of size 
+A list of class "bob" containing:
+\itemize{
+  \item \code{post.draws}: A matrix of size 
   \eqn{S}-by-\eqn{\text{dim}(\boldsymbol{\theta})} of approximate posterior 
   draws, where \eqn{S} is the total number of posterior draws and 
   \eqn{\text{dim}(\boldsymbol{\theta})} is the total number of parameters in 
   the model. The first \eqn{K \times d} columns in the matrix are posterior 
   draws from the mean parameters, the next \eqn{K\times d^2} columns are 
   posterior draws from variance and covariance parameters, and the last 
-  \eqn{K} columns are posterior draws from the probability parameters. The 
-  second elements in the list is a vector containing the optimal 
-  \eqn{\boldsymbol{x}^{*}} values used in the random weighting. 
-  See Marin et al. (2025+) for details.
+  \eqn{K} columns are posterior draws from the mixture proportions.
+  \item \code{x.optim}: The optimal \eqn{\boldsymbol{x}^{*}} values used in 
+  the random weighting. See Marin et al. (2026) for additional details.
+}
 }
 \description{
-This function generates approximate posterior draws from Gaussian mixture
-models using the Bayesian Optimized Bootstrap (BOB, Marin et al. 2025+). The
-function leverages parallel computing across multiple CPU cores with the 
-package \code{parallel}. Please be aware that the parallelization is 
-conducted via \emph{forking} rather than \emph{sockets}, so it only works on 
-"unix" systems. One can verify the OS type by running the following R code:
+This function generates approximate draws for the posterior distribution of a
+Gaussian mixture model under conjugate prior using the Bayesian optimized 
+bootstrap (BOB, Marin et al. 2026).
+}
+\details{
+\emph{Note}: The function leverages parallel computing across multiple CPU 
+cores through the package \code{parallel}. Please be aware that 
+parallelization over multiple CPU workers is conducted via \emph{forking} 
+rather than \emph{sockets}, so it is only available on POSIX ("unix") 
+systems. On non-POSIX platforms, the function is still operational, but the 
+number of CPU workers will be automatically set to one. To verify your 
+operating system (OS), simply run the following R code: 
 \code{.Platform$OS.type}.
 }
 \references{
-S. Marin, B. Long,and A. H. Westveld (2025+), BOB: Bayesian Optimized 
-Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models. 
-\emph{arXiv}, {2311.03644}.
+S. Marin, B. Long,and A. H. Westveld (2026), BOB: Bayesian optimized 
+bootstrap for approximate posterior sampling in Gaussian mixture models. 
+\emph{Statistics and Computing}, 36, 14.
 }
 \author{
 Santiago Marin

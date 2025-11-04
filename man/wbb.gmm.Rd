@@ -2,7 +2,7 @@
 % Please edit documentation in R/wbb.R
 \name{wbb.gmm}
 \alias{wbb.gmm}
-\title{Sample from the posterior distribution of a GMM via WBB}
+\title{Approximately sample from the posterior distribution of a GMM via WBB}
 \usage{
 wbb.gmm(
   y,
@@ -63,16 +63,16 @@ The options are either (i) \code{"wbb1"} for random prior weights or (ii)
 approximate posterior draws. Default is 20000.}
 
 \item{a}{A scalar corresponding to the \eqn{a} hyper-parameter in the 
-tempering profile. Note that \eqn{a\in [0,1)}. Default is 0.}
+tempering profile. Constraint: \eqn{a\in [0,1)}. Default is 0.}
 
 \item{b}{A scalar corresponding to the \eqn{b} hyper-parameter in the 
-tempering profile. Note that \eqn{b\in \mathbb{R}}. Default is 0.}
+tempering profile. Constraint: \eqn{b\in \mathbb{R}}. Default is 0.}
 
 \item{c}{A scalar corresponding to the \eqn{c} hyper-parameter in the 
-tempering profile. Note that \eqn{c>0}. Default is 1.}
+tempering profile. Constraint: \eqn{c>0}. Default is 1.}
 
 \item{r}{A scalar corresponding to the \eqn{r} hyper-parameter in the 
-tempering profile. Note that \eqn{r>0}. Default is 1.}
+tempering profile. Constraint: \eqn{r>0}. Default is 1.}
 
 \item{cores}{The number of CPU cores to use during the sampling process.
 Default is \code{parallel::detectCores() - 1}.}
@@ -91,14 +91,20 @@ A matrix of size \eqn{S}-by-\eqn{\text{dim}(\boldsymbol{\theta})}
   parameters.
 }
 \description{
-This function generates approximate posterior draws from Gaussian mixture
-models using the Weighted Bayesian Bootstrap (WBB, Newton et al. 2021). The 
-function gives the user two option of random prior weights: (i) Random prior
-weights or (ii) fixed prior weights. Additionally, the function leverages 
-parallel computing across multiple CPU cores with the package 
-\code{parallel}. Please be aware that the parallelization is conducted via 
-\emph{forking} rather than \emph{sockets}, so it only works on "unix" 
-systems. One can verify the OS type by running the following R code:
+This function generates approximate draws for the posterior distribution of a
+Gaussian mixture model under conjugate prior using the weighted Bayesian 
+bootstrap (WBB, Newton et al. 2021). The function supports two options of 
+prior weights: (i) Random prior weights or (ii) fixed prior weights. See 
+Newton et al. (2021) for additional details.
+}
+\details{
+\emph{Note}: The function leverages parallel computing across multiple CPU 
+cores through the package \code{parallel}. Please be aware that 
+parallelization over multiple CPU workers is conducted via \emph{forking} 
+rather than \emph{sockets}, so it is only available on POSIX ("unix") 
+systems. On non-POSIX platforms, the function is still operational, but the 
+number of CPU workers will be automatically set to one. To verify your 
+operating system (OS), simply run the following R code: 
 \code{.Platform$OS.type}.
 }
 \references{

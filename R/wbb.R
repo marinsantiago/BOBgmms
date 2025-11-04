@@ -1,13 +1,18 @@
-#' Sample from the posterior distribution of a GMM via WBB
+#' Approximately sample from the posterior distribution of a GMM via WBB
 #'
-#' This function generates approximate posterior draws from Gaussian mixture
-#' models using the Weighted Bayesian Bootstrap (WBB, Newton et al. 2021). The 
-#' function gives the user two option of random prior weights: (i) Random prior
-#' weights or (ii) fixed prior weights. Additionally, the function leverages 
-#' parallel computing across multiple CPU cores with the package 
-#' \code{parallel}. Please be aware that the parallelization is conducted via 
-#' \emph{forking} rather than \emph{sockets}, so it only works on "unix" 
-#' systems. One can verify the OS type by running the following R code:
+#' This function generates approximate draws for the posterior distribution of a
+#' Gaussian mixture model under conjugate prior using the weighted Bayesian 
+#' bootstrap (WBB, Newton et al. 2021). The function supports two options of 
+#' prior weights: (i) Random prior weights or (ii) fixed prior weights. See 
+#' Newton et al. (2021) for additional details.
+#' 
+#' \emph{Note}: The function leverages parallel computing across multiple CPU 
+#' cores through the package \code{parallel}. Please be aware that 
+#' parallelization over multiple CPU workers is conducted via \emph{forking} 
+#' rather than \emph{sockets}, so it is only available on POSIX ("unix") 
+#' systems. On non-POSIX platforms, the function is still operational, but the 
+#' number of CPU workers will be automatically set to one. To verify your 
+#' operating system (OS), simply run the following R code: 
 #' \code{.Platform$OS.type}.
 #'
 #' @param y A matrix of observations of dimension \eqn{n}-by-\eqn{d}, where each 
@@ -37,13 +42,13 @@
 #' @param max.iters A positive integer, corresponding to the total number of 
 #'   approximate posterior draws. Default is 20000. 
 #' @param a A scalar corresponding to the \eqn{a} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{a\in [0,1)}. Default is 0.
+#'   tempering profile. Constraint: \eqn{a\in [0,1)}. Default is 0.
 #' @param b A scalar corresponding to the \eqn{b} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{b\in \mathbb{R}}. Default is 0.
+#'   tempering profile. Constraint: \eqn{b\in \mathbb{R}}. Default is 0.
 #' @param c A scalar corresponding to the \eqn{c} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{c>0}. Default is 1.
+#'   tempering profile. Constraint: \eqn{c>0}. Default is 1.
 #' @param r A scalar corresponding to the \eqn{r} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{r>0}. Default is 1.
+#'   tempering profile. Constraint: \eqn{r>0}. Default is 1.
 #' @param cores The number of CPU cores to use during the sampling process.
 #'   Default is \code{parallel::detectCores() - 1}.
 #' @param seed The seed for random number generation. Default is
@@ -73,7 +78,7 @@ wbb.gmm <- function(y, means.init, covs.init, probs.init,
                     seed = sample.int(.Machine$integer.max, 1)) {
   
   # Input validation -----------------------------------------------------------
-  if (!is.numeric(y) || !is.matrix(y)) stop("y must be a numeric matrix.")
+  if (!is.numeric(y) || !is.matrix(y)) stop("y must be a numeric matrix")
   dims_y <- dim(y)
   n <- dims_y[1]
   p <- dims_y[2]
@@ -81,17 +86,17 @@ wbb.gmm <- function(y, means.init, covs.init, probs.init,
   K <- length(means.init)
   is.correct.hyperpriorparam(betas, lambdas, nus, psis, alphas, K, p)
   if (!(wbb.scheme %in% c("wbb1", "wbb2"))) {
-    stop("Incorrect WBB scheme. It should be either 'wbb1' or 'wbb2'.")
+    stop("wbb.scheme should be either 'wbb1' or 'wbb2'")
   }
   if (max.iters %% 1 != 0 || max.iters <= 0) {
-    stop("Incorrect value for max.iters. It should be a positive integer.")
+    stop("max.iters. should be a positive integer")
   }
-  if (!is.numeric(a) || a < 0 || a > 1) stop("Incorrect value for a.")
-  if (!is.numeric(b)) stop("Incorrect value for b.")
-  if (!is.numeric(c) || c <= 0) stop("Incorrect value for c.")
-  if (!is.numeric(r) || r <= 0) stop("Incorrect value for r.")
-  if (cores %% 1 != 0 || cores <= 0) stop("Incorrect value for cores.")
-  if (seed %% 1 != 0) stop("Supplied 'seed' is not an integer.")
+  if (!is.numeric(a) || a < 0 || a > 1) stop("Incorrect value for a")
+  if (!is.numeric(b)) stop("Incorrect value for b")
+  if (!is.numeric(c) || c <= 0) stop("Incorrect value for c")
+  if (!is.numeric(r) || r <= 0) stop("Incorrect value for r")
+  if (cores %% 1 != 0 || cores <= 0) stop("Incorrect value for cores")
+  if (seed %% 1 != 0) stop("Supplied 'seed' is not an integer")
   gc() # Collect garbage from input validation
   
   # Pre-compute constants ------------------------------------------------------
@@ -100,8 +105,11 @@ wbb.gmm <- function(y, means.init, covs.init, probs.init,
   p <- dims_y[2]
   K <- length(means.init)
   
+  # Set number of parallel workers ---------------------------------------------
+  if (.Platform$OS.type != "unix") cores <- 1L
+  
   cat("Model: Gaussian mixture with conjugate priors", "\n")
-  cat("Approximate posterior sampling via Weighted Bayesian Bootstrap:", "\n")
+  cat("Approximate posterior sampling via weighted Bayesian bootstrap:", "\n")
   # Set random number generator and seed
   base::RNGkind("L'Ecuyer-CMRG")
   set.seed(seed)

@@ -1,7 +1,8 @@
-#' Log-posterior Optimization via Expectation Maximization
+#' Log-posterior optimization via expectation-maximization (EM).
 #'
 #' This function maximizes the weighted log-posterior density associated with a 
-#' Gaussian Mixture Model via the EM algorithm, as in Marin et al. (2025+).
+#' Gaussian mixture model with the EM algorithm as described in Marin et 
+#' al. (2026).
 #'
 #' @param y A matrix of observations of dimension \eqn{n}-by-\eqn{d}, where each 
 #'   of the \eqn{n} rows is an observation vector.
@@ -37,25 +38,25 @@
 #'   probability. All weights must be non-negative. Default is 1 for each 
 #'   weight, i.e., no weighting.  
 #' @param a A scalar corresponding to the \eqn{a} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{a\in [0,1)}. Default is 0.
+#'   tempering profile. Constraint: \eqn{a\in [0,1)}. Default is 0.
 #' @param b A scalar corresponding to the \eqn{b} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{b\in \mathbb{R}}. Default is 0.
+#'   tempering profile. Constraint: \eqn{b\in \mathbb{R}}. Default is 0.
 #' @param c A scalar corresponding to the \eqn{c} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{c>0}. Default is 1.
+#'   tempering profile. Constraint: \eqn{c>0}. Default is 1.
 #' @param r A scalar corresponding to the \eqn{r} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{r>0}. Default is 1.
+#'   tempering profile. Constraint: \eqn{r>0}. Default is 1.
 #' @param max.iters Maximum number of EM iterations. Default is 500.
 #' @param epss Convergence threshold for the EM algorithm. Default is 
 #'   \code{1e-4}
 #'
 #' @return A list containing the EM solution for each mean vector, each 
-#'   covariance matrix, and each probability in the mixture model.
+#'   covariance matrix, and each mixture component.
 #' 
 #' @references
 #'
-#' S. Marin, B. Long,and A. H. Westveld (2025+), BOB: Bayesian Optimized 
-#' Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models. 
-#' \emph{arXiv}, {2311.03644}.
+#' S. Marin, B. Long,and A. H. Westveld (2026), BOB: Bayesian optimized 
+#' bootstrap for approximate posterior sampling in Gaussian mixture models. 
+#' \emph{Statistics and Computing}, 36, 14.
 #' 
 #' @author Santiago Marin
 #' 
@@ -84,9 +85,7 @@ em.optim <- function(y, means.init, covs.init, probs.init,
   if (!is.numeric(c) || c <= 0) stop("Incorrect value for c.")
   if (!is.numeric(r) || r <= 0) stop("Incorrect value for r.")
   if (!is.numeric(epss) || epss <= 0) stop("Incorrect value for epss.")
-  if (max.iters %% 1 != 0 || max.iters <= 0) {
-    stop("Incorrect value for max.iters.")
-  }
+  if (max.iters %% 1 != 0 || max.iters <= 0) stop("Incorrect  max.iters.")
   gc() # Collect garbage from input validation
   
   # EM optimization ------------------------------------------------------------
@@ -104,11 +103,9 @@ em.optim <- function(y, means.init, covs.init, probs.init,
   em_out
 }
 
-
 # ------------------------------------------------------------------------------
 # Helpers 
 # ------------------------------------------------------------------------------
-
 
 em_optim <- function(y, means.init, covs.init, probs.init, alphas, 
                      betas, lambdas, nus, psis, lik.weights, means.weights, 

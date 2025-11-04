@@ -1,9 +1,11 @@
+# ------------------------------------------------------------------------------
+# Utils
+# ------------------------------------------------------------------------------
 
 # Check if a matrix is symmetric
 is.symmetric.matrix <- function (x) {
   sum(x == t(x)) == (nrow(x)^2)
 }
-
 
 # Check if a matrix is symmetric semidefinite positive
 is.positive.semidefinite <- function (x) {
@@ -16,7 +18,6 @@ is.positive.semidefinite <- function (x) {
   else pd <- FALSE
   pd
 }
-
 
 # Validate the user-supplied initial values for the EM algorithm.
 is.correct.init <- function(means.init, covs.init, probs.init, p) {
@@ -58,7 +59,6 @@ is.correct.init <- function(means.init, covs.init, probs.init, p) {
   if (!chck.probs) stop("probs.init is not a valid vector of probabilities.")
   rm(chck.probs, K)
 }
-
 
 # Validate the user-supplied values for the prior hyper-parameters
 is.correct.hyperpriorparam <- function(betas, lambdas, nus, Psis, 
@@ -105,7 +105,6 @@ is.correct.hyperpriorparam <- function(betas, lambdas, nus, Psis,
     stop("The length of alphas does not match the number of clusters.")
   }
 }
-
 
 # Validate the user-supplied weighting scheme
 is.correct.weighting <- function(lik.weights, means.weights,

@@ -1,11 +1,16 @@
-#' Sample from the posterior distribution of a GMM via BOB
+#' Approximately sample from the posterior distribution of a GMM via BOB
 #'
-#' This function generates approximate posterior draws from Gaussian mixture
-#' models using the Bayesian Optimized Bootstrap (BOB, Marin et al. 2025+). The
-#' function leverages parallel computing across multiple CPU cores with the 
-#' package \code{parallel}. Please be aware that the parallelization is 
-#' conducted via \emph{forking} rather than \emph{sockets}, so it only works on 
-#' "unix" systems. One can verify the OS type by running the following R code:
+#' This function generates approximate draws for the posterior distribution of a
+#' Gaussian mixture model under conjugate prior using the Bayesian optimized 
+#' bootstrap (BOB, Marin et al. 2026).
+#' 
+#' \emph{Note}: The function leverages parallel computing across multiple CPU 
+#' cores through the package \code{parallel}. Please be aware that 
+#' parallelization over multiple CPU workers is conducted via \emph{forking} 
+#' rather than \emph{sockets}, so it is only available on POSIX ("unix") 
+#' systems. On non-POSIX platforms, the function is still operational, but the 
+#' number of CPU workers will be automatically set to one. To verify your 
+#' operating system (OS), simply run the following R code: 
 #' \code{.Platform$OS.type}.
 #'
 #' @param y A matrix of observations of dimension \eqn{n}-by-\eqn{d}, where each 
@@ -43,91 +48,87 @@
 #' @param bo.iters A positive integer, corresponding to the total number of 
 #'   iterations in the Bayesian optimization procedure. Default is 100.
 #' @param a A scalar corresponding to the \eqn{a} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{a\in [0,1)}. Default is 0.
+#'   tempering profile. Constraint: \eqn{a\in [0,1)}. Default is 0.
 #' @param b A scalar corresponding to the \eqn{b} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{b\in \mathbb{R}}. Default is 0.
+#'   tempering profile. Constraint: \eqn{b\in \mathbb{R}}. Default is 0.
 #' @param c A scalar corresponding to the \eqn{c} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{c>0}. Default is 1.
+#'   tempering profile. Constraint: \eqn{c>0}. Default is 1. 
 #' @param r A scalar corresponding to the \eqn{r} hyper-parameter in the 
-#'   tempering profile. Note that \eqn{r>0}. Default is 1.
+#'   tempering profile. Constraint: \eqn{r>0}. Default is 1.
 #' @param cores The number of CPU cores to use during the sampling process.
 #'   Default is \code{parallel::detectCores() - 1}.
 #' @param seed The seed for random number generation. Default is
 #'   \code{sample.int(.Machine$integer.max, 1)}   
 #'
-#' @return A list of size two. The first element is a matrix of size 
+#' @return A list of class "bob" containing:
+#' \itemize{
+#'   \item \code{post.draws}: A matrix of size 
 #'   \eqn{S}-by-\eqn{\text{dim}(\boldsymbol{\theta})} of approximate posterior 
 #'   draws, where \eqn{S} is the total number of posterior draws and 
 #'   \eqn{\text{dim}(\boldsymbol{\theta})} is the total number of parameters in 
 #'   the model. The first \eqn{K \times d} columns in the matrix are posterior 
 #'   draws from the mean parameters, the next \eqn{K\times d^2} columns are 
 #'   posterior draws from variance and covariance parameters, and the last 
-#'   \eqn{K} columns are posterior draws from the probability parameters. The 
-#'   second elements in the list is a vector containing the optimal 
-#'   \eqn{\boldsymbol{x}^{*}} values used in the random weighting. 
-#'   See Marin et al. (2025+) for details.
+#'   \eqn{K} columns are posterior draws from the mixture proportions.
+#'   \item \code{x.optim}: The optimal \eqn{\boldsymbol{x}^{*}} values used in 
+#'   the random weighting. See Marin et al. (2026) for additional details.
+#' }
 #' 
 #' @references
 #'
-#' S. Marin, B. Long,and A. H. Westveld (2025+), BOB: Bayesian Optimized 
-#' Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models. 
-#' \emph{arXiv}, {2311.03644}.
+#' S. Marin, B. Long,and A. H. Westveld (2026), BOB: Bayesian optimized 
+#' bootstrap for approximate posterior sampling in Gaussian mixture models. 
+#' \emph{Statistics and Computing}, 36, 14.
 #' 
 #' @author Santiago Marin
 #'
-bob.gmm <- function(y, means.init, covs.init, probs.init,
-                    betas, lambdas, nus, psis, alphas,
-                    lower_bound, upper_bound, max.iters = 20000, 
-                    size.batch = 1000, bo.iters = 100,
+bob.gmm <- function(y, means.init, covs.init, probs.init, betas, lambdas, nus, 
+                    psis, alphas,lower_bound, upper_bound, 
+                    max.iters = 20000, size.batch = 1000, bo.iters = 100,
                     a = 0, b = 0, c = 1, r = 1,
                     cores = parallel::detectCores() - 1,
                     seed = sample.int(.Machine$integer.max, 1)) {
   
   # Input validation -----------------------------------------------------------
-  if (!is.numeric(y) || !is.matrix(y)) stop("y must be a numeric matrix.")
+  if (!is.numeric(y) || !is.matrix(y)) stop("y must be a numeric matrix")
   dims_y <- dim(y)
   n <- dims_y[1]
   p <- dims_y[2]
   is.correct.init(means.init, covs.init, probs.init, p)
   K <- length(means.init)
   is.correct.hyperpriorparam(betas, lambdas, nus, psis, alphas, K, p)
-  if (!is.numeric(lower_bound)) {
-    stop("'lower_bound' should be a vector of size 3 * K + 1.")
+  if (!is.numeric(lower_bound)) stop("'lower_bound' should be numeric")
+  if (min(lower_bound) <= 0) stop("'lower_bound' should be positive")
+  if (!is.numeric(upper_bound)) stop("'upper_bound' should be numeric")
+  if (min(upper_bound) <= 0) stop("'upper_bound' should be positive")
+  if (!is.numeric(a) || a < 0 || a > 1) stop("Incorrect value for a")
+  if (!is.numeric(b)) stop("Incorrect value for b")
+  if (!is.numeric(c) || c <= 0) stop("Incorrect value for c")
+  if (!is.numeric(r) || r <= 0) stop("Incorrect value for r")
+  if (cores %% 1 != 0 || cores <= 0) stop("Incorrect value for cores")
+  if (seed %% 1 != 0) stop("'seed' should be an integer")
+  nb <- c("max.iters", "size.batch", "bo.iters")
+  for (i in nb) {
+    if (get(i) %% 1 != 0 || get(i) <= 0) {
+      stop(paste(i, " should be a positive integer"))
+    }
   }
-  if (min(lower_bound) <= 0) {
-    stop("All entries in 'lower_bound' should positive.")
-  }
-  if (!is.numeric(upper_bound)) {
-    stop("'upper_bound' should be a vector of size 3 * K + 1.")
-  }
-  if (min(upper_bound) <= 0) {
-    stop("All entries in 'upper_bound' should positive.")
-  }
-  if (max.iters %% 1 != 0 || max.iters <= 0) {
-    stop("Incorrect value for max.iters. It should be a positive integer.")
-  }
-  if (size.batch %% 1 != 0 || size.batch <= 0) {
-    stop("Incorrect value for size.batch It should be a positive integer.")
-  }
-  if (bo.iters %% 1 != 0 || bo.iters <= 0) {
-    stop("Incorrect value for bo.iters It should be a positive integer.")
-  }
-  if (!is.numeric(a) || a < 0 || a > 1) stop("Incorrect value for a.")
-  if (!is.numeric(b)) stop("Incorrect value for b.")
-  if (!is.numeric(c) || c <= 0) stop("Incorrect value for c.")
-  if (!is.numeric(r) || r <= 0) stop("Incorrect value for r.")
-  if (cores %% 1 != 0 || cores <= 0) stop("Incorrect value for cores.")
-  if (seed %% 1 != 0) stop("Supplied 'seed' is not an integer.")
-  gc() # Collect garbage from input validation
+  rm(i, nb); gc() # Collect cache from input validation
   
   # Pre-compute constants ------------------------------------------------------
   K <- length(alphas)
   p <- ncol(y)
   main.idxs <- get_indices(p, K, covs.idx = FALSE) # Means, variances and probs.
   covs.idxs <- get_indices(p, K, covs.idx = TRUE)  # Covariances
-  # Cores to evaluate the KDEs
-  cores_KDEs <- if (p > 10 && K > 2) min(cores, 5L) else 1L
   
+  # Set number of parallel workers ---------------------------------------------
+  if (.Platform$OS.type == "unix") {
+    # Cores to evaluate the KDEs
+    cores_KDEs <- if (p > 10 && K > 2) min(cores, 5L) else 1L
+  } else {
+    cores <- cores_KDEs <- 1L
+  }
+
   # Define the loss function L.hat(x) ------------------------------------------
   objective <- \(x) {
     loss <- tryCatch(
@@ -174,11 +175,9 @@ bob.gmm <- function(y, means.init, covs.init, probs.init,
   out
 }
 
-
 # ------------------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------------------
-
 
 bob.batch <- function(x_cov,
                       y, means.init, covs.init, probs.init,
@@ -230,9 +229,9 @@ get_indices <- function(p, K, covs.idx = FALSE) {
   seq_covs <- seq_len(pK * p) + pK
   out <- if (!covs.idx) {
     c(
-      seq_len(pK),                                # means indices
-      seq_covs[c(diag(p) == 1)],                  # variances indices
-      seq_len(K) + pK * (p + 1)                   # probs. indices
+      seq_len(pK),                  # means indices
+      seq_covs[c(diag(p) == 1)],    # variances indices
+      seq_len(K) + pK * (p + 1)     # probs. indices
     )
   } else seq_covs[c(upper.tri(matrix(NA, p, p)))] # covs. indices
   out

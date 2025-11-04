@@ -1,17 +1,17 @@
-# BOBgmms <img src="man/figures/BOBgmms.png" alt="Description of image" width="140" height="150" align="right"> 
+# BOBgmms <img src="man/figures/BOBgmms.png" alt="Description of image" width="130" height="150" align="right"> 
 
 <!-- badges: start -->
 
-![R-CMD-check](https://github.com/marinsantiago/BOBgmms/workflows/R-CMD-check/badge.svg)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-
+[![R-CMD-check](https://github.com/marinsantiago/BOBgmms/workflows/R-CMD-check/badge.svg)](https://github.com/marinsantiago/BOBgmms/workflows/R-CMD-check/badge.svg)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 </br>
 
 ## Overview
 
-This repository contains the R package `BOBgmms` (developer's version), which implements the [Bayesian Optimized Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models](https://arxiv.org/abs/2311.03644) (Marin et al., 2025+).
+This repository contains the R package `BOBgmms` (developer's version), which 
+implements the [Bayesian optimized bootstrap for approximate posterior sampling in Gaussian mixture models](https://doi.org/10.1007/s11222-025-10763-y) (Marin et al., 2026).
 
 ## Installation
 
@@ -22,7 +22,7 @@ You can install the developer's version via `devtools` as:
 devtools::install_github("marinsantiago/BOBgmms")
 ```
 
-On the other hand, if you wish to install the package from the `BOBgmms.zip` file in the supplementary materials to Marin et al. (2025+):
+On the other hand, if you wish to install the package from the `BOBgmms.zip` file in the supplementary materials to Marin et al. (2026):
 
   1. Decompress the zip file `BOBgmms.zip`. The folder `BOBgmms` should result.
   
@@ -38,7 +38,12 @@ devtools::install()
 
 ## <a name="system"></a> System Requirements
 
-Parallelization over mutiple CPU workers is conducted via *forking* (rather than *sockets*), so it only works on POSIX systems (i.e., macOS, Linux, Unix, BSD), not on Windows. To run the package functions on Windows, one would need to set the number of CPU workers to one. For further details, see [Package '`parallel`'](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf).
+Parallelization over multiple CPU workers is conducted via *forking* 
+(rather than *sockets*), so it is only available on POSIX systems (e.g., macOS, 
+Linux, Unix, BSD), not on Windows. On non-POSIX platforms (such as Windows), 
+the package functions are still operational, but the number of CPU workers will 
+be automatically set to one. For further details, see 
+[Package '`parallel`'](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf). 
 
 One can verify the OS type by running the following R code:
 
@@ -52,19 +57,20 @@ Detailed guidelines for using the package functions are referred to their help p
 
 ## <a name="cite"></a> Citation
 
-If you use any part of this code in your work, please consider citing our paper:
+If you use any part of this package in your work, please consider citing our *Statistics and Computing* paper:
 
 ```
-@misc{marin_bob,
-  title         = {BOB: Bayesian Optimized Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models}, 
-  author        = {Santiago Marin and Bronwyn Loong and Anton H. Westveld},
-  year          = {2024},
-  eprint        = {2311.03644},
-  archivePrefix = {arXiv},
-  primaryClass  = {stat.ME}
+@article{marin_bob,
+  title   = {BOB: Bayesian optimized bootstrap for approximate posterior sampling in Gaussian mixture models},
+  author  = {Santiago Marin and Bronwyn Loong and Anton H. Westveld},
+  journal = {Statistics and Computing},
+  volume  = {36},
+  pages   = {14},
+  year    = {2026},
+  doi     = {10.1007/s11222-025-10763-y}
 }
 ```
 
 ## <a name="refs"></a> References
 
-Marin, S., Loong, B., and Westveld, A. H. (2025+), "BOB: Bayesian Optimized Bootstrap for Approximate Posterior Sampling in Gaussian Mixture Models."
+Marin, S., Loong, B., and Westveld, A. H. (2026), "BOB: Bayesian optimized bootstrap for approximate posterior sampling in Gaussian mixture models." *Statistics and Computing*, **36**, 14. [doi:10.1080/10618600.2025.2572327](https://doi.org/10.1007/s11222-025-10763-y)
