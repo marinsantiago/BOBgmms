@@ -119,7 +119,8 @@ next_evals <- function(evals, outcomes, lower_bound, upper_bound) {
   )
   
   # Define the acquisition function --------------------------------------------
-  EI_fun <- \(x) DiceOptim::EI(x, gp) # Expected Improvement
+  #EI_fun <- \(x) DiceOptim::EI(x, gp) # Expected Improvement
+  EI_fun <- \(x) EI(x, gp) # Expected Improvement
   
   # Optimize the acquisition function ------------------------------------------
   EI.x <- seq(lower_bound, upper_bound, by = 0.02)
