@@ -43,9 +43,19 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          cache-version: 2
+          extra-packages: |
+            any::rcmdcheck
+            any::Rcpp
+            any::pbmcapply
+            any::mvnfast
+            any::FKSUM
+            any::lhs
+            any::pbapply
+            any::DiceKriging
+            any::DiceOptim
           needs: check
-
+      
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
