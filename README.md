@@ -41,7 +41,7 @@ devtools::install()
 Parallelization over multiple CPU workers is conducted via *forking* 
 (rather than *sockets*), so it is only available on POSIX systems (e.g., macOS, 
 Linux, Unix, BSD), not on Windows. On non-POSIX platforms (such as Windows), 
-the package functions are still operational, but the number of CPU workers will 
+the package functions are still operational but the number of CPU workers will 
 be automatically set to one. For further details, see 
 [Package '`parallel`'](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf). 
 
