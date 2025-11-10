@@ -22,11 +22,11 @@ You can install the developer's version via `devtools` as:
 devtools::install_github("marinsantiago/BOBgmms")
 ```
 
-On the other hand, if you wish to install the package from the `BOBgmms.zip` file in the supplementary materials to Marin et al. (2026):
+On the other hand, if you wish to install the package from the supplementary materials to Marin et al. (2026):
 
-  1. Decompress the zip file `BOBgmms.zip`. The folder `BOBgmms` should result.
+  1. Decompress the zip file `Supplementary_file2`. The folder `BOBgmms-main` should result.
   
-  2. In R, set your working directory to the folder `BOBgmms`.
+  2. In R, set your working directory to the folder `BOBgmms-main`.
   
   3. Run the following R code:
   
